@@ -1,0 +1,10 @@
+filename,width,height,class,xmin,ymin,xmax,ymax
+SEC_3.jpg,2268,4032,Security Officer,761,261,1609,1849
+SEC_2.jpg,543,965,Security Officer,135,20,393,509
+FAC_4.jpg,2268,4032,Facility Operator,1406,159,1971,1217
+FAC_3.jpg,2268,4032,Facility Operator,507,841,1181,2110
+FAC_2.jpg,543,965,Facility Operator,166,26,405,485
+FAC_1.jpg,543,965,Facility Operator,60,187,155,374
+SEC_1.jpg,2268,4032,Security Officer,304,1087,1609,2646
+FOD_1.jpg,2268,4032,Food Worker,587,819,1261,2262
+FOD_2.jpg,2268,4032,Food Worker,246,224,920,1514
