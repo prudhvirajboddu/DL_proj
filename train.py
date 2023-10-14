@@ -20,10 +20,12 @@ class FaceDataset(Dataset):
             self.img_dir, self.annotations.iloc[index, 0])
         image = Image.open(label_path).convert('RGB')
 
-        ymin = self.annotations.iloc[index, 1]
-        xmin = self.annotations.iloc[index, 2]
-        ymax = self.annotations.iloc[index, 3]
-        xmax = self.annotations.iloc[index, 4]
+        labels = self.annotations.class.unique()
+        
+        xmin = self.annotations.iloc[index, 4]
+        ymin = self.annotations.iloc[index, 5]
+        xmax = self.annotations.iloc[index, 6]
+        ymax = self.annotations.iloc[index, 7]
         boxes = [[xmin, ymin, xmax, ymax]]
 
         if self.transform:
