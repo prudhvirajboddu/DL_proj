@@ -133,22 +133,6 @@ print(f"Number of training samples: {len(train_dataset)}")
 # execute datasets.py using Python command from Terminal...
 # ... to visualize sample images
 # USAGE: python datasets.py
-
-
-# for i,data in enumerate(train_loader):
-#     images, targets = data
-#     print(images[i].shape)
-#     print(targets[i]['labels'])
-#     break
-
-# dataset = FaceDataset(
-#         TRAIN_DIR, RESIZE_TO, RESIZE_TO, CLASSES
-#     )
-
-# for i,j in dataset:
-#         print(i.shape)
-#         print(j['labels'])
-
 if __name__ == '__main__':
     # sanity check of the Dataset pipeline with sample visualization
     dataset = FaceDataset(
@@ -158,10 +142,7 @@ if __name__ == '__main__':
 
     # function to visualize a single sample
     def visualize_sample(image, target):
-        print(image.shape)
         box = target['boxes'][0]
-        print(box)
-        print(target['labels'][1])
         label = CLASSES[target['labels']]
         cv2.rectangle(
             image,
