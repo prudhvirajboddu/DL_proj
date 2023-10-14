@@ -147,6 +147,7 @@ print(f"Number of training samples: {len(train_dataset)}")
 
 # for i,j in dataset:
 #         print(i.shape)
+#         print(j["image_id"])
 #         print(j['labels'])
 
 if __name__ == '__main__':
@@ -158,10 +159,11 @@ if __name__ == '__main__':
 
     # function to visualize a single sample
     def visualize_sample(image, target):
-        print(image.shape)
+        # print(image.shape)
         box = target['boxes'][0]
-        print(box)
-        print(target['labels'][1])
+        # print(target)
+        # print(box)
+        # print(target['labels'][1])
         label = CLASSES[target['labels']]
         cv2.rectangle(
             image,
@@ -173,7 +175,7 @@ if __name__ == '__main__':
             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2
         )
         cv2.imshow('Image', image)
-        cv2.waitKey(0)
+        # cv2.waitKey(0)
 
     NUM_SAMPLES_TO_VISUALIZE = 2
     for i in range(NUM_SAMPLES_TO_VISUALIZE):
