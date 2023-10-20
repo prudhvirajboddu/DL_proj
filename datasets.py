@@ -156,7 +156,7 @@ if __name__ == '__main__':
         cv2.imshow('Image', image)
         cv2.waitKey(0)
 
-    NUM_SAMPLES_TO_VISUALIZE = 2
-    for i in range(NUM_SAMPLES_TO_VISUALIZE):
-        image, target = dataset[i]
-        visualize_sample(image, target)
+    # NUM_SAMPLES_TO_VISUALIZE = 2
+    # for i in range(NUM_SAMPLES_TO_VISUALIZE):
+    #     image, target = dataset[i]
+    #     visualize_sample(image, target)
