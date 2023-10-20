@@ -8,6 +8,7 @@ from xml.etree import ElementTree as et
 from config import CLASSES, RESIZE_TO, TRAIN_DIR, BATCH_SIZE
 from torch.utils.data import Dataset, DataLoader
 from utils import collate_fn, get_train_transform, get_valid_transform
+import plotext as plt
 
 # the dataset class
 
@@ -144,17 +145,19 @@ if __name__ == '__main__':
     def visualize_sample(image, target):
         box = target['boxes'][0]
         label = CLASSES[target['labels']]
-        cv2.rectangle(
-            image,
-            (int(box[0]), int(box[1])), (int(box[2]), int(box[3])),
-            (0, 255, 0), 2
-        )
-        cv2.putText(
-            image, label, (int(box[0]), int(box[1]-5)),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2
-        )
-        cv2.imshow('Image', image)
-        cv2.waitKey(0)
+        # cv2.rectangle(
+        #     image,
+        #     (int(box[0]), int(box[1])), (int(box[2]), int(box[3])),
+        #     (0, 255, 0), 2
+        # )
+        # cv2.putText(
+        #     image, label, (int(box[0]), int(box[1]-5)),
+        #     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2
+        # )
+        # cv2.imshow('Image', image)
+        # cv2.waitKey(0)
+        plt.image_plot(image)
+        plt.show()
 
     # NUM_SAMPLES_TO_VISUALIZE = 2
     # for i in range(NUM_SAMPLES_TO_VISUALIZE):

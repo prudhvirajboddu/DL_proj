@@ -1,9 +1,6 @@
-import cv2
-import os
+import cv2 as cv
+img = cv.imread("/workspaces/DL_proj/1c620bed-IMG_8229.jpg")
 
-os.environ['QT_STYLE_OVERRIDE'] = 'xcb'
-
-img = cv2.imread('train/2ca0d812-IMG_8218.jpg')
-cv2.imshow("my_window", img)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+cv.imshow("Display window", img)
+k = cv.waitKey(0)
+# print(cv.getBuildInformation())
