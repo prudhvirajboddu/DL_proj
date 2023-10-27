@@ -121,6 +121,9 @@ train_loader = DataLoader(
     num_workers=0,
     collate_fn=collate_fn
 )
+
+print(train_loader)
+
 # valid_loader = DataLoader(
 #     valid_dataset,
 #     batch_size=BATCH_SIZE,
@@ -140,6 +143,10 @@ if __name__ == '__main__':
         TRAIN_DIR, RESIZE_TO, RESIZE_TO, CLASSES
     )
     print(f"Number of training images: {len(dataset)}")
+
+    for i,data in train_loader:
+        print(len(i))
+        # print(data)
 
     # function to visualize a single sample
     def visualize_sample(image, target):
