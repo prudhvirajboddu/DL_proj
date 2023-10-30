@@ -31,7 +31,11 @@ def train(train_data_loader, model):
 
         triplet_loss = nn.TripletMarginLoss(margin=1.0, p=2, eps=1e-7)
 
-        losses = triplet_loss(anchor, positive, negative)
+        anchor_loss = sum(loss for loss in anchor.values())
+        positive_loss = sum(loss for loss in positive.values())
+        negative_loss = sum(loss for loss in negative.values())
+
+        losses = triplet_loss(anchor_loss, positive_loss, negative_loss)
         loss_value = losses.item()
         # train_loss_list.append(loss_value)
 

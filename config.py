@@ -6,7 +6,7 @@ NUM_EPOCHS = 1 # number of epochs to train for
 
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 # training images and XML files directory
-TRAIN_DIR = 'D:\\DL_proj\\train'
+TRAIN_DIR = 'train/'
 # validation images and XML files directory
 # VALID_DIR = '../Microcontroller Detection/test'
 
