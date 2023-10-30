@@ -7,6 +7,7 @@ from tqdm.auto import tqdm
 from datasets import train_loader 
 
 import torch
+import torch.nn as nn
 import time
 
 def train(train_data_loader, model):
@@ -24,9 +25,13 @@ def train(train_data_loader, model):
         images = list(image.to(DEVICE) for image in images)
         targets = [{k: v.to(DEVICE) for k, v in t.items()} for t in targets]
 
-        loss_dict = model(images, targets)
+        anchor = model(images, targets)
+        positive = model(images, targets)
+        negative = model(images, targets)
 
-        losses = sum(loss for loss in loss_dict.values())
+        triplet_loss = nn.TripletMarginLoss(margin=1.0, p=2, eps=1e-7)
+
+        losses = triplet_loss(anchor, positive, negative)
         loss_value = losses.item()
         # train_loss_list.append(loss_value)
 
