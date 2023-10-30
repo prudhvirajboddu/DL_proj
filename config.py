@@ -2,12 +2,11 @@ import torch
 
 BATCH_SIZE = 4 # increase / decrease according to GPU memeory
 RESIZE_TO = 512 # resize the image for training and transforms
-NUM_EPOCHS = 5 # number of epochs to train for
+NUM_EPOCHS = 1 # number of epochs to train for
 
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-
 # training images and XML files directory
-TRAIN_DIR = 'train'
+TRAIN_DIR = 'D:\\DL_proj\\train'
 # validation images and XML files directory
 # VALID_DIR = '../Microcontroller Detection/test'
 

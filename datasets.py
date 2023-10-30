@@ -8,7 +8,6 @@ from xml.etree import ElementTree as et
 from config import CLASSES, RESIZE_TO, TRAIN_DIR, BATCH_SIZE
 from torch.utils.data import Dataset, DataLoader
 from utils import collate_fn, get_train_transform, get_valid_transform
-import plotext as plt
 
 # the dataset class
 
@@ -122,7 +121,7 @@ train_loader = DataLoader(
     collate_fn=collate_fn
 )
 
-print(train_loader)
+# print(train_loader)
 
 # valid_loader = DataLoader(
 #     valid_dataset,
@@ -137,36 +136,9 @@ print(f"Number of training samples: {len(train_dataset)}")
 # execute datasets.py using Python command from Terminal...
 # ... to visualize sample images
 # USAGE: python datasets.py
-if __name__ == '__main__':
-    # sanity check of the Dataset pipeline with sample visualization
-    dataset = FaceDataset(
-        TRAIN_DIR, RESIZE_TO, RESIZE_TO, CLASSES
-    )
-    print(f"Number of training images: {len(dataset)}")
 
-    for i,data in train_loader:
-        print(len(i))
-        # print(data)
 
-    # function to visualize a single sample
-    def visualize_sample(image, target):
-        box = target['boxes'][0]
-        label = CLASSES[target['labels']]
-        # cv2.rectangle(
-        #     image,
-        #     (int(box[0]), int(box[1])), (int(box[2]), int(box[3])),
-        #     (0, 255, 0), 2
-        # )
-        # cv2.putText(
-        #     image, label, (int(box[0]), int(box[1]-5)),
-        #     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2
-        # )
-        # cv2.imshow('Image', image)
-        # cv2.waitKey(0)
-        plt.image_plot(image)
-        plt.show()
-
-    # NUM_SAMPLES_TO_VISUALIZE = 2
-    # for i in range(NUM_SAMPLES_TO_VISUALIZE):
-    #     image, target = dataset[i]
-    #     visualize_sample(image, target)
+for images,labels in train_dataset:
+    print(images.shape)
+    print(labels['labels'])
+    break

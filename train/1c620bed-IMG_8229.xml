@@ -31,16 +31,4 @@
 <ymax>1217</ymax>
 </bndbox>
 </object>
-<object>
-<name>Facility Operator</name>
-<pose>Unspecified</pose>
-<truncated>0</truncated>
-<difficult>0</difficult>
-<bndbox>
-<xmin>507</xmin>
-<ymin>841</ymin>
-<xmax>1181</xmax>
-<ymax>2110</ymax>
-</bndbox>
-</object>
 </annotation>
