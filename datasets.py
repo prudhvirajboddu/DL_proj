@@ -5,7 +5,7 @@ import os
 import glob as glob
 
 from xml.etree import ElementTree as et
-from config import CLASSES, RESIZE_TO, TRAIN_DIR, BATCH_SIZE
+from config import CLASSES, RESIZE_TO, TRAIN_DIR, BATCH_SIZE, VALID_DIR
 from torch.utils.data import Dataset, DataLoader
 from utils import collate_fn, get_train_transform, get_valid_transform
 
@@ -110,8 +110,8 @@ class FaceDataset(Dataset):
 # prepare the final datasets and data loaders
 train_dataset = FaceDataset(
     TRAIN_DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_train_transform())
-# valid_dataset = FaceDataset(
-#     VALID_DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_valid_transform())
+valid_dataset = FaceDataset(
+    VALID_DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_valid_transform())
 
 train_loader = DataLoader(
     train_dataset,
@@ -123,22 +123,19 @@ train_loader = DataLoader(
 
 # print(train_loader)
 
-# valid_loader = DataLoader(
-#     valid_dataset,
-#     batch_size=BATCH_SIZE,
-#     shuffle=False,
-#     num_workers=0,
-#     collate_fn=collate_fn
-# )
+valid_loader = DataLoader(
+    valid_dataset,
+    batch_size=BATCH_SIZE,
+    shuffle=False,
+    num_workers=0,
+    collate_fn=collate_fn
+)
 print(f"Number of training samples: {len(train_dataset)}")
-# print(f"Number of validation samples: {len(valid_dataset)}\n")
+print(f"Number of validation samples: {len(valid_dataset)}\n")
 
 # execute datasets.py using Python command from Terminal...
 # ... to visualize sample images
 # USAGE: python datasets.py
 
 
-for images, labels in train_dataset:
-    print(images.shape)
-    print(labels['labels'])
-    break
+for images

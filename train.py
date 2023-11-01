@@ -4,7 +4,7 @@ from config import DEVICE, NUM_CLASSES, NUM_EPOCHS
 from model import create_model
 from utils import Averager
 from tqdm.auto import tqdm
-from datasets import train_loader 
+from datasets import train_loader, valid_loader
 
 import torch
 import torch.nn as nn
@@ -49,6 +49,36 @@ def train(train_data_loader, model):
         # update the loss value beside the progress bar for each iteration
         prog_bar.set_description(desc=f"Loss: {loss_value:.4f}")
     return train_loss_list
+
+# function for running validation iterations
+def validate(valid_data_loader, model):
+    print('Validating')
+    global val_itr
+    global val_loss_list
+    
+    # initialize tqdm progress bar
+    prog_bar = tqdm(valid_data_loader, total=len(valid_data_loader))
+    
+    for i, data in enumerate(prog_bar):
+        images, targets = data
+        
+        images = list(image.to(DEVICE) for image in images)
+        targets = [{k: v.to(DEVICE) for k, v in t.items()} for t in targets]
+        
+        with torch.no_grad():
+            loss_dict = model(images, targets)
+
+        losses = sum(loss for loss in loss_dict.values())
+        loss_value = losses.item()
+        val_loss_list.append(loss_value)
+
+        val_loss_hist.send(loss_value)
+
+        val_itr += 1
+
+        # update the loss value beside the progress bar for each iteration
+        prog_bar.set_description(desc=f"Loss: {loss_value:.4f}")
+    return val_loss_list
 
 if __name__ == '__main__':
     # initialize the model and move to the computation device

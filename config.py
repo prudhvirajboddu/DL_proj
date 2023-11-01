@@ -6,15 +6,15 @@ NUM_EPOCHS = 3 # number of epochs to train for
 
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 # training images and XML files directory
-TRAIN_DIR = 'train/'
+TRAIN_DIR = 'dataset/train/'
 # validation images and XML files directory
-# VALID_DIR = '../Microcontroller Detection/test'
+VALID_DIR = 'dataset/valid/'
 
 # classes: 0 index is reserved for background
 CLASSES = [
-    'Security Officer' ,'Facility Operator' ,'Food Worker'
+    'student','Security', 'Staff', 'Facility Worker','Food Service worker'
 ]
-NUM_CLASSES = 3
+NUM_CLASSES = 5
 
 # whether to visualize images after crearing the data loaders
 # VISUALIZE_TRANSFORMED_IMAGES = False
