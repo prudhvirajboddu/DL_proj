@@ -36,15 +36,10 @@ pytestdebug.log
 
 # Jupyter Notebook
 # Ignore image files and their directories
-*.jpg
-*.jpeg
-*.png
+
 *.gif
 *.bmp
 *.svg
-*/dataset/
-*/dataset/*
-*.xml
 *.zip
 .ipynb_checkpoints
 
