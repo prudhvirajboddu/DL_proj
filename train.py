@@ -37,9 +37,9 @@ def train(train_data_loader, model):
 
         losses = triplet_loss(anchor_loss, positive_loss, negative_loss)
         loss_value = losses.item()
-        # train_loss_list.append(loss_value)
+        train_loss_list.append(loss_value)
 
-        # train_loss_hist.send(loss_value)
+        train_loss_hist.send(loss_value)
 
         losses.backward()
         optimizer.step()

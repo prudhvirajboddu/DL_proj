@@ -138,7 +138,7 @@ print(f"Number of training samples: {len(train_dataset)}")
 # USAGE: python datasets.py
 
 
-for images,labels in train_dataset:
+for images, labels in train_dataset:
     print(images.shape)
     print(labels['labels'])
     break
