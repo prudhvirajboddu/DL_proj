@@ -12,9 +12,10 @@ TRAIN_DIR = 'D:\\DL_proj\\train'
 
 # classes: 0 index is reserved for background
 CLASSES = [
-    'Security Officer' ,'Facility Operator' ,'Food Worker'
+    'Security Officer' ,'Facility Operator' ,'Food Worker' , 'Student', 'Teacher', 'Visitor'
 ]
-NUM_CLASSES = 3
+
+NUM_CLASSES = 6
 
 # whether to visualize images after crearing the data loaders
 # VISUALIZE_TRANSFORMED_IMAGES = False
