@@ -1,0 +1,7 @@
+pytorch
+torchvision
+numpy
+matplotlib
+pytorch-cuda=11.8
+tqdm
+albumentations
