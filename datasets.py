@@ -138,4 +138,7 @@ print(f"Number of validation samples: {len(valid_dataset)}\n")
 # USAGE: python datasets.py
 
 
-for images
+for images,label in train_dataset:
+    print(images.shape)
+    print(CLASSES[label['labels'].item()])
+    break
