@@ -1,6 +1,6 @@
 import torch
 
-BATCH_SIZE = 4 # increase / decrease according to GPU memeory
+BATCH_SIZE = 8 # increase / decrease according to GPU memeory
 RESIZE_TO = 512 # resize the image for training and transforms
 NUM_EPOCHS = 3 # number of epochs to train for
 
