@@ -1,26 +1,27 @@
+import time
+import torch
+import torch.nn as nn
+from tqdm.auto import tqdm
+
 from config import DEVICE, NUM_CLASSES, NUM_EPOCHS
 from config import SAVE_PLOTS_EPOCH, SAVE_MODEL_EPOCH
 from model import create_model
 from utils import Averager
-from tqdm.auto import tqdm
 from datasets import train_loader, valid_loader
 
-import torch
-import torch.nn as nn
-import time
 
 def train(train_data_loader, model):
     print('Training')
     global train_itr
     global train_loss_list
-    
-     # initialize tqdm progress bar
+
+    # initialize tqdm progress bar
     prog_bar = tqdm(train_data_loader, total=len(train_data_loader))
-    
+
     for _, data in enumerate(prog_bar):
         optimizer.zero_grad()
         images, targets = data
-        
+
         images = list(image.to(DEVICE) for image in images)
         targets = [{k: v.to(DEVICE) for k, v in t.items()} for t in targets]
 
@@ -44,26 +45,26 @@ def train(train_data_loader, model):
         optimizer.step()
 
         train_itr += 1
-    
+
         # update the loss value beside the progress bar for each iteration
         prog_bar.set_description(desc=f"Loss: {loss_value:.4f}")
     return train_loss_list
 
-# function for running validation iterations
+
 def validate(valid_data_loader, model):
     print('Validating')
     global val_itr
     global val_loss_list
-    
+
     # initialize tqdm progress bar
     prog_bar = tqdm(valid_data_loader, total=len(valid_data_loader))
-    
+
     for _, data in enumerate(prog_bar):
         images, targets = data
-        
+
         images = list(image.to(DEVICE) for image in images)
         targets = [{k: v.to(DEVICE) for k, v in t.items()} for t in targets]
-        
+
         with torch.no_grad():
             anchor_valid = model(images, targets)
             positive_valid = model(images, targets)
@@ -86,6 +87,7 @@ def validate(valid_data_loader, model):
         # update the loss value beside the progress bar for each iteration
         prog_bar.set_description(desc=f"Loss: {loss_value:.4f}")
     return val_loss_list
+
 
 if __name__ == '__main__':
     # initialize the model and move to the computation device
@@ -122,7 +124,7 @@ if __name__ == '__main__':
         start = time.time()
         train_loss = train(train_loader, model)
         val_loss = validate(valid_loader, model)
-        print(f"Epoch #{epoch} train loss: {train_loss_hist.value:.3f}")   
-        print(f"Epoch #{epoch} validation loss: {val_loss_hist.value:.3f}")   
+        print(f"Epoch #{epoch} train loss: {train_loss_hist.value:.3f}")
+        print(f"Epoch #{epoch} validation loss: {val_loss_hist.value:.3f}")
         end = time.time()
         print(f"Took {((end - start) / 60):.3f} minutes for epoch {epoch}")
