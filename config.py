@@ -16,9 +16,6 @@ CLASSES = [
 ]
 NUM_CLASSES = 5
 
-# whether to visualize images after crearing the data loaders
-# VISUALIZE_TRANSFORMED_IMAGES = False
-
 # # location to save model and plots
 # OUT_DIR = '../outputs'
 # SAVE_PLOTS_EPOCH = 2 # save loss plots after these many epochs
