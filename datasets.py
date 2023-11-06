@@ -4,12 +4,25 @@ import numpy as np
 import os
 import glob as glob
 
+import matplotlib.pyplot as plt
 from xml.etree import ElementTree as et
-from config import CLASSES, RESIZE_TO, TRAIN_DIR, BATCH_SIZE
+from config import CLASSES, RESIZE_TO, TRAIN_DIR, BATCH_SIZE, VALID_DIR
 from torch.utils.data import Dataset, DataLoader
 from utils import collate_fn, get_train_transform, get_valid_transform
 
 # the dataset class
+
+"""
+This is a custom dataset class that inherits from the PyTorch Dataset class. 
+It has three methods: __init__, __getitem__, and __len__.
+It returns image and target data which contains the bounding box coordinates and the class labels.
+It does transformations on the images and bounding boxes for both training and testing data.
+It is used to load the images and annotations from the dataset directory and prepare them for training and validation. 
+The __getitem__ method is used to read the image and annotations from the dataset directory and prepare them for training and validation.
+The __len__ method is used to return the total number of images in the dataset.
+We are going to use these methods to create the training and validation datasets. 
+We also can visualize the images with bounding boxes using the visualize_batch function.
+"""
 
 
 class FaceDataset(Dataset):
@@ -110,8 +123,8 @@ class FaceDataset(Dataset):
 # prepare the final datasets and data loaders
 train_dataset = FaceDataset(
     TRAIN_DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_train_transform())
-# valid_dataset = FaceDataset(
-#     VALID_DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_valid_transform())
+valid_dataset = FaceDataset(
+    VALID_DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_valid_transform())
 
 train_loader = DataLoader(
     train_dataset,
@@ -123,22 +136,34 @@ train_loader = DataLoader(
 
 # print(train_loader)
 
-# valid_loader = DataLoader(
-#     valid_dataset,
-#     batch_size=BATCH_SIZE,
-#     shuffle=False,
-#     num_workers=0,
-#     collate_fn=collate_fn
-# )
+valid_loader = DataLoader(
+    valid_dataset,
+    batch_size=BATCH_SIZE,
+    shuffle=False,
+    num_workers=0,
+    collate_fn=collate_fn
+)
 print(f"Number of training samples: {len(train_dataset)}")
-# print(f"Number of validation samples: {len(valid_dataset)}\n")
+print(f"Number of validation samples: {len(valid_dataset)}\n")
 
 # execute datasets.py using Python command from Terminal...
-# ... to visualize sample images
+# ... to visualize batch of images with bounding boxes
 # USAGE: python datasets.py
 
+def visualize_batch(images, targets):
+    # Create a figure with subplots
+    fig, axes = plt.subplots(nrows=len(images), ncols=1, figsize=(15,15))
+    # Loop through each image and its targets
+    for i, (image, target) in enumerate(zip(images, targets)):
+        # Plot the image
+        axes[i].imshow(image.permute(1, 2, 0).numpy())
+        boxes = target['boxes'].numpy()
+        labels = [t.item() for t in target['labels'] ]
+        for j, box in enumerate(boxes):
+            x1, y1, x2, y2 = box
+            rect = plt.Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False, color='red')
+            axes[i].add_patch(rect)
+            axes[i].text(x1, y1, CLASSES[labels[j]], fontsize=12, color='red')
+    # Show the plot
+    plt.show()
 
-for images, labels in train_dataset:
-    print(images.shape)
-    print(labels['labels'])
-    break
