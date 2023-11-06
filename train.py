@@ -23,19 +23,23 @@ def train(train_data_loader, model):
         optimizer.zero_grad()
         images, targets = data
 
-        images = list(image.to(DEVICE) for image in images)
-        targets = [{k: v.to(DEVICE) for k, v in t.items()} for t in targets]
+        a_images = list(image.to(DEVICE) for image in images)
+        a_targets = [{k: v.to(DEVICE) for k, v in t.items()} for t in targets]
 
-        anchor = model(images, targets)
-        positive = model(images, targets)
-        negative = model(images, targets)
+        p_images = list(image.to(DEVICE) for image in images)
+        p_targets = [{k: v.to(DEVICE) for k, v in t.items()} for t in targets]
 
-        # print(anchor)
+        n_images = list(image.to(DEVICE) for image in images)
+        n_targets = [{k: v.to(DEVICE) for k, v in t.items()} for t in targets]
+
+        anchor = model(a_images, a_targets)
+        positive = model(p_images, p_targets)
+        negative = model(n_images, n_targets)
+
         anchor_loss = sum(loss for loss in anchor.values())
         positive_loss = sum(loss for loss in positive.values())
         negative_loss = sum(loss for loss in negative.values())
 
-        # print(anchor_loss)
         losses = criterion(anchor_loss, positive_loss, negative_loss)
         loss_value = losses.item()
         train_loss_list.append(loss_value)
@@ -71,7 +75,6 @@ def validate(valid_data_loader, model):
             positive_valid = model(images, targets)
             negative_valid = model(images, targets)
 
-        # triplet_loss = criterion(margin=0.1, p=1, eps=1e-8 , swap = True, reduction='sum')
 
         anchor_valid_loss = sum(loss for loss in anchor_valid.values())
         positive_valid_loss = sum(loss for loss in positive_valid.values())
@@ -134,3 +137,4 @@ if __name__ == '__main__':
         print(f"Epoch #{epoch} validation loss: {val_loss_hist.value:.3f}")
         end = time.time()
         print(f"Took {((end - start) / 60):.3f} minutes for epoch {epoch}")
+        break
