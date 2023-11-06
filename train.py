@@ -8,6 +8,7 @@ from config import SAVE_PLOTS_EPOCH, SAVE_MODEL_EPOCH
 from model import create_model
 from utils import Averager
 from datasets import train_loader, valid_loader
+from model import TripletLoss
 
 
 def train(train_data_loader, model):
@@ -35,14 +36,11 @@ def train(train_data_loader, model):
         positive = model(p_images, p_targets)
         negative = model(n_images, n_targets)
 
-        triplet_loss = nn.TripletMarginLoss(margin=0.3, p=1, eps=1e-7, swap= True, reduction= 'sum')
-
-
         anchor_loss = sum(loss for loss in anchor.values())
         positive_loss = sum(loss for loss in positive.values())
         negative_loss = sum(loss for loss in negative.values())
 
-        losses = triplet_loss(anchor_loss, positive_loss, negative_loss)
+        losses = criterion(anchor_loss, positive_loss, negative_loss)
         loss_value = losses.item()
         train_loss_list.append(loss_value)
 
@@ -77,13 +75,12 @@ def validate(valid_data_loader, model):
             positive_valid = model(images, targets)
             negative_valid = model(images, targets)
 
-        triplet_loss = nn.TripletMarginLoss(margin=0.3, p=1, eps=1e-7, swap= True, reduction= 'sum')
 
         anchor_valid_loss = sum(loss for loss in anchor_valid.values())
         positive_valid_loss = sum(loss for loss in positive_valid.values())
         negative_valid_loss = sum(loss for loss in negative_valid.values())
 
-        losses = triplet_loss(anchor_valid_loss, positive_valid_loss, negative_valid_loss)
+        losses = criterion(anchor_valid_loss, positive_valid_loss, negative_valid_loss)
         loss_value = losses.item()
         val_loss_list.append(loss_value)
 
@@ -103,8 +100,13 @@ if __name__ == '__main__':
     print(DEVICE)
     # get the model parameters
     params = [p for p in model.parameters() if p.requires_grad]
+    
+    #criterion
+    criterion = nn.TripletMarginWithDistanceLoss(distance_function=nn.PairwiseDistance(), 
+                                                margin=0.1 , swap = True, reduction='none')
+
     # define the optimizer
-    optimizer = torch.optim.SGD(params, lr=0.0001, momentum=0.9, weight_decay=0.0005)
+    optimizer = torch.optim.SGD(params, lr=0.00001, momentum=0.7, weight_decay=0.00005)
 
     # initialize the Averager class
     train_loss_hist = Averager()

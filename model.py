@@ -1,6 +1,9 @@
 import torchvision
+import torch
+from torch import nn
 
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+
 
 def create_model(num_classes):
     
