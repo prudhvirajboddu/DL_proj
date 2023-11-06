@@ -19,6 +19,6 @@ CLASSES = [
 NUM_CLASSES = 5
 
 # # location to save model and plots
-# OUT_DIR = '../outputs'
-# SAVE_PLOTS_EPOCH = 2 # save loss plots after these many epochs
-# SAVE_MODEL_EPOCH = 2 # save model after these many epochs
+OUT_DIR = '../outputs'
+SAVE_PLOTS_EPOCH = 2 # save loss plots after these many epochs
+SAVE_MODEL_EPOCH = 2 # save model after these many epochs
