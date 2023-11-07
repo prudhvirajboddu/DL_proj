@@ -140,7 +140,7 @@ valid_loader = DataLoader(
 print(f"Number of training samples: {len(train_dataset)}")
 print(f"Number of validation samples: {len(valid_dataset)}\n")
 
-# execute datasets.py using Python command from Terminal...
+# execute datasets.py using Python command  from Terminal...
 # ... to visualize batch of images with bounding boxes
 # USAGE: python datasets.py
 
