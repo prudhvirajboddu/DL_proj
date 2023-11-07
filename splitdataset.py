@@ -7,10 +7,10 @@ imgs =[]
 xmls =[]
 
 #setup dir names
-trainPath = 'D:\\DL_proj\\dataset\\train'
-valPath = 'D:\\DL_proj\\dataset\\valid'
-testPath = 'D:\\DL_proj\\dataset\\test'
-crsPath = 'D:\\DL_proj\\data' #dir where images and annotations stored
+trainPath = 'dataset/train'
+valPath = 'dataset/valid'
+testPath = 'dataset/test'
+crsPath = 'data' #dir where images and annotations stored
 
 #setup ratio (val ratio = rest of the files in origin dir after splitting into train and test)
 train_ratio = 0.8
