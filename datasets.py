@@ -35,6 +35,7 @@ class FaceDataset(Dataset):
 
         # get all the image paths in sorted order
         self.image_paths = glob.glob(f"{self.dir_path}/*.jpg")
+        self.image_paths += glob.glob(f"{self.dir_path}/*.png")
         self.all_images = [image_path.split(
             '/')[-1] for image_path in self.image_paths]
         self.all_images = sorted(self.all_images)
@@ -90,10 +91,6 @@ class FaceDataset(Dataset):
 
         # bounding box to tensor
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
-        # area of the bounding boxes
-        area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
-        # no crowd instances
-        iscrowd = torch.zeros((boxes.shape[0],), dtype=torch.int64)
         # labels to tensor
         labels = torch.as_tensor(labels, dtype=torch.int64)
 
@@ -101,10 +98,6 @@ class FaceDataset(Dataset):
         target = {}
         target["boxes"] = boxes
         target["labels"] = labels
-        target["area"] = area
-        target["iscrowd"] = iscrowd
-        image_id = torch.tensor([idx])
-        target["image_id"] = image_id
 
         # apply the image transforms
         if self.transforms:
@@ -134,7 +127,6 @@ train_loader = DataLoader(
     collate_fn=collate_fn
 )
 
-# print(train_loader)
 
 valid_loader = DataLoader(
     valid_dataset,
@@ -143,6 +135,7 @@ valid_loader = DataLoader(
     num_workers=0,
     collate_fn=collate_fn
 )
+
 print(f"Number of training samples: {len(train_dataset)}")
 print(f"Number of validation samples: {len(valid_dataset)}\n")
 
