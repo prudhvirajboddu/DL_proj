@@ -9,6 +9,7 @@ from xml.etree import ElementTree as et
 from config import CLASSES, RESIZE_TO, TRAIN_DIR, BATCH_SIZE, VALID_DIR
 from torch.utils.data import Dataset, DataLoader
 from utils import collate_fn, get_train_transform, get_valid_transform
+import torchvision.transforms.functional as TF
 
 # the dataset class
 
@@ -145,18 +146,23 @@ print(f"Number of validation samples: {len(valid_dataset)}\n")
 
 def visualize_batch(images, targets):
     # Create a figure with subplots
-    fig, axes = plt.subplots(nrows=len(images), ncols=1, figsize=(15,15))
+    # fig, axes = plt.subplots(nrows=len(images), ncols=1, figsize=(15,15))
+    fig, axs = plt.subplots(2, 4, figsize=(15, 10))
+    axs = axs.ravel()
+
     # Loop through each image and its targets
     for i, (image, target) in enumerate(zip(images, targets)):
         # Plot the image
-        axes[i].imshow(image.permute(1, 2, 0).numpy())
+        image = TF.to_pil_image(image)
+        image = np.array(image)
+        axs[i].imshow(image)
         boxes = target['boxes'].numpy()
         labels = [t.item() for t in target['labels'] ]
         for j, box in enumerate(boxes):
             x1, y1, x2, y2 = box
             rect = plt.Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False, color='red')
-            axes[i].add_patch(rect)
-            axes[i].text(x1, y1, CLASSES[labels[j]], fontsize=12, color='red')
+            axs[i].add_patch(rect)
+            axs[i].text(x1, y1, CLASSES[labels[j]], fontsize=12, color='red')
     # Show the plot
     plt.show()
 
