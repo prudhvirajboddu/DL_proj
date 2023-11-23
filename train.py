@@ -2,13 +2,11 @@ import time
 import torch
 import torch.nn as nn
 from tqdm.auto import tqdm
-
-from config import DEVICE, NUM_CLASSES, NUM_EPOCHS
-from config import SAVE_PLOTS_EPOCH, SAVE_MODEL_EPOCH
+import matplotlib.pyplot as plt
+from config import DEVICE, NUM_CLASSES, NUM_EPOCHS , OUT_DIR
 from model import create_model
 from utils import Averager
 from datasets import train_loader, valid_loader
-from model import TripletLoss
 
 
 def train(train_data_loader, model):
@@ -137,4 +135,22 @@ if __name__ == '__main__':
         print(f"Epoch #{epoch} validation loss: {val_loss_hist.value:.3f}")
         end = time.time()
         print(f"Took {((end - start) / 60):.3f} minutes for epoch {epoch}")
-        break
+
+    training = 'done'
+
+    figure_1, train_ax = plt.subplots()
+    figure_2, valid_ax = plt.subplots()
+
+    #save the model and plots after training
+
+    if training == 'done': 
+                train_ax.plot(train_loss, color='blue')
+                train_ax.set_xlabel('Epochs')
+                train_ax.set_ylabel('train loss')
+                valid_ax.plot(val_loss, color='red')
+                valid_ax.set_xlabel('Epochs')
+                valid_ax.set_ylabel('validation loss')
+                figure_1.savefig(f"{OUT_DIR}/train_loss.png")
+                figure_2.savefig(f"{OUT_DIR}/valid_loss.png")
+
+                torch.save(model.state_dict(), f"{OUT_DIR}/model.pth")

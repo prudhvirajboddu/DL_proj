@@ -1,6 +1,6 @@
 import torch
 
-BATCH_SIZE = 128 # increase / decrease according to GPU memeory
+BATCH_SIZE = 8 # increase / decrease according to GPU memeory
 RESIZE_TO = 512 # resize the image for training and transforms
 NUM_EPOCHS = 20 # number of epochs to train for
 
@@ -19,6 +19,4 @@ CLASSES = [
 NUM_CLASSES = 5
 
 # # location to save model and plots
-OUT_DIR = '../outputs'
-SAVE_PLOTS_EPOCH = 2 # save loss plots after these many epochs
-SAVE_MODEL_EPOCH = 2 # save model after these many epochs
+OUT_DIR = 'outputs'
