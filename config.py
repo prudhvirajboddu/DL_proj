@@ -1,8 +1,8 @@
 import torch
 
-BATCH_SIZE = 8 # increase / decrease according to GPU memeory
+BATCH_SIZE = 128 # increase / decrease according to GPU memeory
 RESIZE_TO = 512 # resize the image for training and transforms
-NUM_EPOCHS = 1 # number of epochs to train for
+NUM_EPOCHS = 20 # number of epochs to train for
 
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 # training images and XML files directory
