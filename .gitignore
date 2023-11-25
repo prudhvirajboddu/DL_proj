@@ -42,6 +42,7 @@ pytestdebug.log
 *.svg
 *.zip
 .ipynb_checkpoints
+*.pth
 
 # pyenv
 .python-version

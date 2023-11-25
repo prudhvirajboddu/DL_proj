@@ -101,10 +101,10 @@ if __name__ == '__main__':
     
     #criterion
     criterion = nn.TripletMarginWithDistanceLoss(distance_function=nn.PairwiseDistance(), 
-                                                margin=0.1 , swap = True, reduction='none')
+                                                margin=0.01 , swap = True, reduction='none')
 
     # define the optimizer
-    optimizer = torch.optim.SGD(params, lr=0.00001, momentum=0.7, weight_decay=0.00005)
+    optimizer = torch.optim.SGD(params, lr=1e-9, momentum=0.02, weight_decay=0.000005)
 
     # initialize the Averager class
     train_loss_hist = Averager()

@@ -4,24 +4,29 @@ import torch
 import glob as glob
 
 from model import create_model
+from config import NUM_CLASSES
 
 # set the computation device
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 # load the model and the trained weights
-model = create_model(num_classes=5).to(device)
+model = create_model(num_classes = NUM_CLASSES).to(device)
+
 model.load_state_dict(torch.load(
-    '../outputs/model100.pth', map_location=device
+    'outputs/model.pth', map_location=device
 ))
+
 model.eval()
 
 # directory where all the images are present
-DIR_TEST = '../test_data'
+DIR_TEST = 'dataset/test'
 test_images = glob.glob(f"{DIR_TEST}/*")
 print(f"Test instances: {len(test_images)}")
 
+test_images = test_images[:10]
+
 # classes: 0 index is reserved for background
 CLASSES = [
-    'background', 'Arduino_Nano', 'ESP8266', 'Raspberry_Pi_3', 'Heltec_ESP32_Lora'
+    'student','Security', 'Staff', 'Facility Worker','Food Service worker'
 ]
 
 # define the detection threshold...
@@ -38,7 +43,7 @@ for i in range(len(test_images)):
     # make the pixel range between 0 and 1
     image /= 255.0
     # bring color channels to front
-    image = np.transpose(image, (2, 0, 1)).astype(np.float)
+    image = np.transpose(image, (2, 0, 1)).astype(np.float32)
     # convert to tensor
     image = torch.tensor(image, dtype=torch.float).cuda()
     # add batch dimension
