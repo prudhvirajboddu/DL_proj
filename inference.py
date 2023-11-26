@@ -4,7 +4,8 @@ import torch
 import glob as glob
 
 from model import create_model
-from config import NUM_CLASSES
+from config import NUM_CLASSES, RESIZE_TO
+import matplotlib.pyplot as plt
 
 # set the computation device
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
@@ -22,7 +23,7 @@ DIR_TEST = 'dataset/test'
 test_images = glob.glob(f"{DIR_TEST}/*")
 print(f"Test instances: {len(test_images)}")
 
-test_images = test_images[:10]
+test_images = test_images[:8]
 
 # classes: 0 index is reserved for background
 CLASSES = [
@@ -40,6 +41,8 @@ for i in range(len(test_images)):
     orig_image = image.copy()
     # BGR to RGB
     image = cv2.cvtColor(orig_image, cv2.COLOR_BGR2RGB).astype(np.float32)
+    # resize to the model input size
+    image = cv2.resize(image, (RESIZE_TO, RESIZE_TO))
     # make the pixel range between 0 and 1
     image /= 255.0
     # bring color channels to front
@@ -62,23 +65,18 @@ for i in range(len(test_images)):
         draw_boxes = boxes.copy()
         # get all the predicited class names
         pred_classes = [CLASSES[i] for i in outputs[0]['labels'].cpu().numpy()]
+
+        fig, axs = plt.subplots(2, 4, figsize=(15, 10))
+        axs = axs.ravel()
+
+        axs[i].imshow(image)
         
         # draw the bounding boxes and write the class name on top of it
-        for j, box in enumerate(draw_boxes):
-            cv2.rectangle(orig_image,
-                        (int(box[0]), int(box[1])),
-                        (int(box[2]), int(box[3])),
-                        (0, 0, 255), 2)
-            cv2.putText(orig_image, pred_classes[j], 
-                        (int(box[0]), int(box[1]-5)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 
-                        2, lineType=cv2.LINE_AA)
+        for j, box in enumerate(boxes):
+            x1, y1, x2, y2 = box
+            rect = plt.Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False, color='red')
+            axs[i].add_patch(rect)
+            axs[i].text(x1, y1, pred_classes[j], fontsize=12, color='red')
 
-        cv2.imshow('Prediction', orig_image)
-        cv2.waitKey(1)
-        cv2.imwrite(f"../test_predictions/{image_name}.jpg", orig_image,)
-    print(f"Image {i+1} done...")
-    print('-'*50)
-
-print('TEST PREDICTIONS COMPLETE')
-cv2.destroyAllWindows()
+    # save the output image
+plt.show()
