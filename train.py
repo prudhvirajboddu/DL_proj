@@ -21,18 +21,12 @@ def train(train_data_loader, model):
         optimizer.zero_grad()
         images, targets = data
 
-        a_images = list(image.to(DEVICE) for image in images)
-        a_targets = [{k: v.to(DEVICE) for k, v in t.items()} for t in targets]
+        images = list(image.to(DEVICE) for image in images)
+        targets = [{k: v.to(DEVICE) for k, v in t.items()} for t in targets]
 
-        p_images = list(image.to(DEVICE) for image in images)
-        p_targets = [{k: v.to(DEVICE) for k, v in t.items()} for t in targets]
-
-        n_images = list(image.to(DEVICE) for image in images)
-        n_targets = [{k: v.to(DEVICE) for k, v in t.items()} for t in targets]
-
-        anchor = model(a_images, a_targets)
-        positive = model(p_images, p_targets)
-        negative = model(n_images, n_targets)
+        anchor = model(images, targets)
+        positive = model(images, targets)
+        negative = model(images, targets)
 
         anchor_loss = sum(loss for loss in anchor.values())
         positive_loss = sum(loss for loss in positive.values())
@@ -95,16 +89,15 @@ if __name__ == '__main__':
     # initialize the model and move to the computation device
     model = create_model(num_classes=NUM_CLASSES)
     model = model.to(DEVICE)
-    print(DEVICE)
+    # print(DEVICE)
     # get the model parameters
     params = [p for p in model.parameters() if p.requires_grad]
     
     #criterion
-    criterion = nn.TripletMarginWithDistanceLoss(distance_function=nn.PairwiseDistance(), 
-                                                margin=0.01 , swap = True, reduction='none')
+    criterion = nn.TripletMarginWithDistanceLoss(distance_function=nn.PairwiseDistance(),margin=0.01 , swap = True, reduction='none')
 
     # define the optimizer
-    optimizer = torch.optim.SGD(params, lr=1e-9, momentum=0.02, weight_decay=0.000005)
+    optimizer = torch.optim.SGD(params, lr=1e-7, momentum=0.1, weight_decay=1e-5)
 
     # initialize the Averager class
     train_loss_hist = Averager()
@@ -115,9 +108,8 @@ if __name__ == '__main__':
     # ... iterations till ena and plot graphs for all iterations
     train_loss_list = []
     val_loss_list = []
-
-    # name to save the trained model with
-    MODEL_NAME = 'model'
+    train_losses = []
+    val_losses = []
 
     # start the training epochs
     for epoch in range(NUM_EPOCHS):
@@ -133,8 +125,10 @@ if __name__ == '__main__':
         val_loss = validate(valid_loader, model)
         print(f"Epoch #{epoch} train loss: {train_loss_hist.value:.3f}")
         print(f"Epoch #{epoch} validation loss: {val_loss_hist.value:.3f}")
+        train_losses.append(train_loss_hist.value)
+        val_losses.append(val_loss_hist.value)
         end = time.time()
-        print(f"Took {((end - start) / 60):.3f} minutes for epoch {epoch}")
+        print(f"Took {((end - start) / 60):.3f} minutes for epoch {epoch+1}")
 
     training = 'done'
 
@@ -144,10 +138,10 @@ if __name__ == '__main__':
     #save the model and plots after training
 
     if training == 'done': 
-                train_ax.plot(train_loss, color='blue')
+                train_ax.plot(train_losses, color='blue')
                 train_ax.set_xlabel('Epochs')
-                train_ax.set_ylabel('train loss')
-                valid_ax.plot(val_loss, color='red')
+                train_ax.set_ylabel('Training loss')
+                valid_ax.plot(val_losses, color='red')
                 valid_ax.set_xlabel('Epochs')
                 valid_ax.set_ylabel('validation loss')
                 figure_1.savefig(f"{OUT_DIR}/train_loss.png")
