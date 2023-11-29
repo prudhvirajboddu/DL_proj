@@ -9,7 +9,7 @@ from config import RESIZE_TO, CLASSES , NUM_CLASSES
 # Load the PyTorch face detection model
 model = create_model(num_classes = NUM_CLASSES)
 
-model.load_state_dict(torch.load('outputs/Model_22.pth' ))
+model.load_state_dict(torch.load('outputs/mmodel_11.pth' ))
 model.eval()
 
 
@@ -38,8 +38,10 @@ def detect_faces(image):
     boxes = outputs[0]['boxes'].data.numpy()
     scores = outputs[0]['scores'].data.numpy()
 
+    print(scores[:])
+
     # filter out boxes according to `detection_threshold`
-    boxes = boxes[scores >= 0.41].astype(np.int32)
+    boxes = boxes[scores >= 0.5].astype(np.int32)
 
     # get all the predicited class names
     pred_classes = [CLASSES[i] for i in outputs[0]['labels'].cpu().numpy()]

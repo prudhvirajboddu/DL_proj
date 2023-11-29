@@ -8,7 +8,7 @@ from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 def create_model(num_classes):
     
     # load Faster RCNN pre-trained model
-    model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights="DEFAULT", pretrained=True, progress=True)
+    model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights = "DEFAULT" ,pretrained=True, pretrained_backbone=True, progress=True, trainable_backbone_layers=4)
     
     # get the number of input features 
     in_features = model.roi_heads.box_predictor.cls_score.in_features

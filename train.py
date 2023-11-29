@@ -1,6 +1,7 @@
 import time
 import torch
 import torch.nn as nn
+import numpy as np
 from tqdm.auto import tqdm
 import matplotlib.pyplot as plt
 from config import DEVICE, NUM_CLASSES, NUM_EPOCHS , OUT_DIR
@@ -94,10 +95,13 @@ if __name__ == '__main__':
     params = [p for p in model.parameters() if p.requires_grad]
     
     #criterion
-    criterion = nn.TripletMarginWithDistanceLoss(distance_function=nn.PairwiseDistance(),margin=0.01 , swap = True, reduction='none')
+    criterion = nn.TripletMarginWithDistanceLoss(distance_function=nn.PairwiseDistance(),margin=0.5 , swap = True, reduction='none')
 
     # define the optimizer
-    optimizer = torch.optim.SGD(params, lr=1e-7, momentum=0.1, weight_decay=1e-5)
+    optimizer = torch.optim.SGD(params = params, lr=2e-9, momentum=0.4, weight_decay=5e-8)
+
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor = 0.7, patience=3, verbose = True)
+    min_loss = np.inf
 
     # initialize the Averager class
     train_loss_hist = Averager()
@@ -129,6 +133,12 @@ if __name__ == '__main__':
         val_losses.append(val_loss_hist.value)
         end = time.time()
         print(f"Took {((end - start) / 60):.3f} minutes for epoch {epoch+1}")
+
+        # save the model if validation loss has decreased
+        if val_loss_hist.value < min_loss:
+            min_loss = val_loss_hist.value
+            torch.save(model.state_dict(), f"{OUT_DIR}/mmodel_{epoch}.pth")
+            print("Model saved")
 
     training = 'done'
 
