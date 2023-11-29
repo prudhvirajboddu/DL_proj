@@ -9,38 +9,48 @@ from config import RESIZE_TO, CLASSES , NUM_CLASSES
 # Load the PyTorch face detection model
 model = create_model(num_classes = NUM_CLASSES)
 
-model.load_state_dict(torch.load(
-    'outputs/model.pth' ))
+model.load_state_dict(torch.load('outputs/Model_22.pth' ))
 model.eval()
 
 
 # Define the function to perform face detection
 def detect_faces(image):
-    # resize to the model input size
-    image = np.reshape(image, (RESIZE_TO, RESIZE_TO, 3))
-    # make the pixel range between 0 and 1
-    image /= 255.0
-    # bring color channels to front
-    image = np.transpose(image, (2, 0, 1)).astype(np.float32)
-    # convert to tensor
-    image = torch.tensor(image, dtype=torch.float)
-    # create a mini-batch as expected by the model
-    input_tensor = image.unsqueeze(0)  
+
+    target_size = (RESIZE_TO, RESIZE_TO)
+    
+    image = cv2.resize(image, target_size)
+    
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    
+    image = image / 255.0
+
+    # image_draw = image.copy()
+
+    # resize to the model input size and add a batch dimension
+    image = torch.from_numpy(image).float().unsqueeze(0).permute(0,3,1,2)  
 
     # Run the model inference
     with torch.no_grad():
-        output = model(input_tensor)
+        output = model(image)
 
     outputs = [{k: v.to('cpu') for k, v in t.items()} for t in output]
 
     boxes = outputs[0]['boxes'].data.numpy()
     scores = outputs[0]['scores'].data.numpy()
+
     # filter out boxes according to `detection_threshold`
-    boxes = boxes[scores >= 0.45].astype(np.int32)
+    boxes = boxes[scores >= 0.41].astype(np.int32)
+
     # get all the predicited class names
     pred_classes = [CLASSES[i] for i in outputs[0]['labels'].cpu().numpy()]
+
     # Get the bounding box coordinates and draw them on the image
-    image_draw = image.copy()
+
+    image_draw = image.clone().squeeze(0).permute(1, 2, 0).numpy()
+
+    # Convert the NumPy array to a PIL Image
+    image_draw = (image_draw * 255).astype(np.uint8)
+    image_draw = Image.fromarray(image_draw)
     draw = ImageDraw.Draw(image_draw)
     for j, box in enumerate(boxes):
         x, y, w, h = box
