@@ -1,0 +1,30 @@
+
+# Use an official Python runtime as the base image
+FROM python:3.8-slim-buster
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the requirements.txt file to the container
+COPY requirements.txt .
+
+# Install the Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the app.py file to the container
+COPY app.py .
+
+# Copy the config.py file to the container
+COPY config.py .
+
+# Copy the model.py file to the container
+COPY model.py .
+
+# Copy the Torch model file to the container
+COPY Model.pth .
+
+# Expose the port on which the application will run
+EXPOSE 7860
+
+# Set the entrypoint command to run the app.py file
+CMD ["python", "app.py"]
