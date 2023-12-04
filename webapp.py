@@ -9,7 +9,7 @@ from config import RESIZE_TO, CLASSES , NUM_CLASSES
 # Load the PyTorch face detection model
 model = create_model(num_classes = NUM_CLASSES)
 
-model.load_state_dict(torch.load('outputs\Model.pth' ))
+model.load_state_dict(torch.load('outputs/model.pth', map_location=torch.device('cpu') ))
 model.eval()
 
 
@@ -24,29 +24,23 @@ def detect_faces(image):
     
     image = image / 255.0
 
-    # image_draw = image.copy()
-
-    # resize to the model input size and add a batch dimension
     image = torch.from_numpy(image).float().unsqueeze(0).permute(0,3,1,2)  
 
     # Run the model inference
     with torch.no_grad():
         output = model(image)
 
+    # Get the predicted boxes, scores, and labels
     outputs = [{k: v.to('cpu') for k, v in t.items()} for t in output]
 
     boxes = outputs[0]['boxes'].data.numpy()
     scores = outputs[0]['scores'].data.numpy()
 
-    print(scores[:])
-
-    # filter out boxes according to `detection_threshold`
-    boxes = boxes[scores >= 0.5].astype(np.int32)
+    # filter out the predictions with low scores
+    boxes = boxes[scores > np.random.choice(scores[:5]) ].astype(np.int32)    
 
     # get all the predicited class names
     pred_classes = [CLASSES[i] for i in outputs[0]['labels'].cpu().numpy()]
-
-    # Get the bounding box coordinates and draw them on the image
 
     image_draw = image.clone().squeeze(0).permute(1, 2, 0).numpy()
 
@@ -54,11 +48,13 @@ def detect_faces(image):
     image_draw = (image_draw * 255).astype(np.uint8)
     image_draw = Image.fromarray(image_draw)
     draw = ImageDraw.Draw(image_draw)
+
+    # Draw the predicted bounding boxes and class names on the image
     for j, box in enumerate(boxes):
         x, y, w, h = box
         draw.rectangle([(x, y), (x + w, y + h)], outline="red", width=2)
-        label = pred_classes[j]  # Replace 0 with the appropriate class index
-        draw.text((x, y), label, fill="red")  # Adjust the text color and position as needed
+        label = pred_classes[j]  
+        draw.text((x, y), label, fill="red")
 
     return image_draw
 

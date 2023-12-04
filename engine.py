@@ -8,6 +8,7 @@ from datasets import train_loader, valid_loader
 
 import torch
 import torch.nn as nn
+import numpy as np
 import matplotlib.pyplot as plt
 import time
 
@@ -83,7 +84,10 @@ if __name__ == '__main__':
     # get the model parameters
     params = [p for p in model.parameters() if p.requires_grad]
     # define the optimizer
-    optimizer = torch.optim.SGD(params, lr=1e-7, momentum=0.1, weight_decay=0.00005)
+    optimizer = torch.optim.SGD(params, lr=2e-4, momentum=0.2, weight_decay=0.00005)
+
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor = 0.7, patience=3, verbose = True)
+    min_loss = np.inf
 
     # initialize the Averager class
     train_loss_hist = Averager()
@@ -131,6 +135,12 @@ if __name__ == '__main__':
         
         end = time.time()
         print(f"Took {((end - start) / 60):.3f} minutes for epoch {epoch+1}")
+
+        # save the model if validation loss has decreased
+        if val_loss_hist.value < min_loss:
+            min_loss = val_loss_hist.value
+            torch.save(model.state_dict(), f"{OUT_DIR}/trying_{epoch}.pth")
+            print("Model saved")
         
         if (epoch+1) == NUM_EPOCHS: # save loss plots and model once at the end
 
@@ -153,7 +163,7 @@ if __name__ == '__main__':
             figure_1.savefig(f"{OUT_DIR}/train_loss.png")
             figure_2.savefig(f"{OUT_DIR}/valid_loss.png")
 
-            torch.save(model.state_dict(), f"{OUT_DIR}/model.pth")
+            torch.save(model.state_dict(), f"{OUT_DIR}/tryi_model.pth")
         
         plt.close('all')
         # sleep for 5 seconds after each epoch

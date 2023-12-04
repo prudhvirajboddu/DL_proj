@@ -95,10 +95,10 @@ if __name__ == '__main__':
     params = [p for p in model.parameters() if p.requires_grad]
     
     #criterion
-    criterion = nn.TripletMarginWithDistanceLoss(distance_function=nn.PairwiseDistance(),margin=0.5 , swap = True, reduction='none')
+    criterion = nn.TripletMarginWithDistanceLoss(distance_function=nn.PairwiseDistance(),margin=0.01 , swap = True, reduction='none')
 
     # define the optimizer
-    optimizer = torch.optim.SGD(params = params, lr=2e-9, momentum=0.4, weight_decay=5e-8)
+    optimizer = torch.optim.SGD(params = params, lr=2e-9, momentum=0.2, weight_decay=5e-8)
 
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor = 0.7, patience=3, verbose = True)
     min_loss = np.inf
@@ -137,7 +137,7 @@ if __name__ == '__main__':
         # save the model if validation loss has decreased
         if val_loss_hist.value < min_loss:
             min_loss = val_loss_hist.value
-            torch.save(model.state_dict(), f"{OUT_DIR}/mmodel_{epoch}.pth")
+            torch.save(model.state_dict(), f"{OUT_DIR}/triplet_TRY_{epoch}.pth")
             print("Model saved")
 
     training = 'done'
@@ -157,4 +157,4 @@ if __name__ == '__main__':
                 figure_1.savefig(f"{OUT_DIR}/train_loss.png")
                 figure_2.savefig(f"{OUT_DIR}/valid_loss.png")
 
-                torch.save(model.state_dict(), f"{OUT_DIR}/model.pth")
+                torch.save(model.state_dict(), f"{OUT_DIR}/model_triplett.pth")

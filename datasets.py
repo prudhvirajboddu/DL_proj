@@ -113,45 +113,12 @@ class FaceDataset(Dataset):
     def __len__(self):
         return len(self.all_images)
     
-class FaceTestDataset(Dataset):
-    def __init__(self, dir_path, width, height):
-        self.dir_path = dir_path
-        self.height = height
-        self.width = width
-
-        # get all the image paths in sorted order
-        self.image_paths = glob.glob(f"{self.dir_path}/*.jpg")
-        self.image_paths += glob.glob(f"{self.dir_path}/*.png")
-        self.all_images = [image_path.split(
-            '/')[-1] for image_path in self.image_paths]
-        self.all_images = sorted(self.all_images)
-
-    def __getitem__(self, idx):
-        # capture the image name and the full image path
-        image_name = self.all_images[idx]
-        image_path = os.path.join(self.dir_path, image_name)
-
-        # read the image
-        image = cv2.imread(image_path)
-        # convert BGR to RGB color format
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(np.float32)
-        image_resized = cv2.resize(image, (self.width, self.height))
-        image_resized /= 255.0
-
-        return image_resized
-
-    def __len__(self):
-        return len(self.all_images)
-    
-
 
 # prepare the final datasets and data loaders
 train_dataset = FaceDataset(
     TRAIN_DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_train_transform())
 valid_dataset = FaceDataset(
     VALID_DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_valid_transform())
-
-test_dataset = FaceTestDataset(TEST_DIR, RESIZE_TO, RESIZE_TO)
 
 train_loader = DataLoader(
     train_dataset,
@@ -161,17 +128,8 @@ train_loader = DataLoader(
     collate_fn=collate_fn
 )
 
-
 valid_loader = DataLoader(
     valid_dataset,
-    batch_size=BATCH_SIZE,
-    shuffle=False,
-    num_workers=0,
-    collate_fn=collate_fn
-)
-
-test_loader = DataLoader(
-    test_dataset,
     batch_size=BATCH_SIZE,
     shuffle=False,
     num_workers=0,
