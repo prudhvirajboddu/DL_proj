@@ -90,7 +90,7 @@ if __name__ == '__main__':
     # initialize the model and move to the computation device
     model = create_model(num_classes=NUM_CLASSES)
     model = model.to(DEVICE)
-    # print(DEVICE)
+
     # get the model parameters
     params = [p for p in model.parameters() if p.requires_grad]
     
@@ -137,7 +137,7 @@ if __name__ == '__main__':
         # save the model if validation loss has decreased
         if val_loss_hist.value < min_loss:
             min_loss = val_loss_hist.value
-            torch.save(model.state_dict(), f"{OUT_DIR}/triplet_TRY_{epoch}.pth")
+            torch.save(model.state_dict(), f"{OUT_DIR}/model_{epoch}.pth")
             print("Model saved")
 
     training = 'done'
@@ -157,4 +157,4 @@ if __name__ == '__main__':
                 figure_1.savefig(f"{OUT_DIR}/train_loss.png")
                 figure_2.savefig(f"{OUT_DIR}/valid_loss.png")
 
-                torch.save(model.state_dict(), f"{OUT_DIR}/model_triplett.pth")
+                torch.save(model.state_dict(), f"{OUT_DIR}/final_model.pth")
